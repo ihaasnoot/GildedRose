@@ -8,6 +8,7 @@ class GildedRose {
     private static final String BACKSTAGE = "Backstage passes to a TAFKAL80ETC concert";
     private static final String BRIE = "Aged Brie";
     private static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
+    private static final String CONJURED = "Conjured";
 
     Item[] items;
 
@@ -26,6 +27,11 @@ class GildedRose {
                 && item.quality > 0
                 && !SULFURAS.equals(item.name)) {
                     item.quality--;
+
+                    //extra decrease of quality for conjured item
+                    if (item.name !=null && item.name.startsWith(CONJURED)){
+                        item.quality--;
+                    }
             } else {
                 //increase quality of "better with age"-items
                 if (item.quality < 50) {
@@ -55,6 +61,11 @@ class GildedRose {
                     if (!BACKSTAGE.equals(item.name)) {
                         if(item.quality > 0 && !SULFURAS.equals(item.name)) {
                             item.quality--;
+
+                            //extra decrease of quality for conjured item
+                            if (item.name !=null && item.name.startsWith(CONJURED)){
+                                item.quality--;
+                            }
                         }
                       //set quality of backstage passes at zero
                     } else {
