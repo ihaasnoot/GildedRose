@@ -10,6 +10,9 @@ class GildedRose {
     private static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
     private static final String CONJURED = "Conjured";
 
+    private static final Integer MIN_QUALITY = 0;
+    private static final Integer MAX_QUALITY = 50;
+
     Item[] items;
 
     public GildedRose(Item[] items) {
@@ -21,63 +24,73 @@ class GildedRose {
      */
     public void updateQuality() {
         for (Item item : items) {
-            //decrease quality of ordinary items
-            if (!BRIE.equals(item.name)
-                && !BACKSTAGE.equals(item.name)
-                && item.quality > 0
-                && !SULFURAS.equals(item.name)) {
-                    item.quality--;
 
-                    //extra decrease of quality for conjured item
-                    if (item.name !=null && item.name.startsWith(CONJURED)){
-                        item.quality--;
-                    }
+            // no update for Sulfuras item
+            if(SULFURAS.equals(item.name)){
+                continue;
+            }
+
+            // update Sellin date
+            item.sellIn--;
+
+            // update quality depending on item
+            if (BRIE.equals(item.name)) {
+                updateQualityAgedBrie(item);
+            } else if (BACKSTAGE.equals(item.name)) {
+                updateQualityBackstage(item);
+            } else if (isConjuredItem(item)) {
+                updateQualityConjuredItem(item);
             } else {
-                //increase quality of "better with age"-items
-                if (item.quality < 50) {
+                updateQualityOrdinaryItem(item);
+            }
+
+        }
+    }
+
+    private void updateQualityAgedBrie(Item item) {
+        if (item.quality < MAX_QUALITY) {
+            item.quality++;
+        }
+
+        if (item.sellIn < 0 && item.quality < MAX_QUALITY) {
+            item.quality++;
+        }
+    }
+
+    private void updateQualityBackstage(Item item) {
+        if (item.sellIn < 0) {
+            item.quality = 0;
+        } else {
+            if (item.quality < MAX_QUALITY) {
+                item.quality++;
+
+                //extra increase of quality of backstage passes depending on sellIn date
+                if (item.sellIn < 11 && item.quality < MAX_QUALITY) {
                     item.quality++;
-
-                    //extra increase of quality of backstage passes depending on sellIn date
-                    if (BACKSTAGE.equals(item.name)) {
-                        if (item.sellIn < 11 && item.quality < 50) {
-                            item.quality++;
-                        }
-                        if (item.sellIn < 6 && item.quality < 50) {
-                            item.quality++;
-                        }
-                    }
                 }
-            }
-
-            //decrease sellIn date for all items except Sulfuras
-            if (!SULFURAS.equals(item.name)) {
-                item.sellIn--;
-            }
-
-            //extra update of quality when sellIn date has past
-            if (item.sellIn < 0) {
-                //extra decrease of quality of ordinary items
-                if (!BRIE.equals(item.name)) {
-                    if (!BACKSTAGE.equals(item.name)) {
-                        if(item.quality > 0 && !SULFURAS.equals(item.name)) {
-                            item.quality--;
-
-                            //extra decrease of quality for conjured item
-                            if (item.name !=null && item.name.startsWith(CONJURED)){
-                                item.quality--;
-                            }
-                        }
-                      //set quality of backstage passes at zero
-                    } else {
-                        item.quality = 0;
-                    }
-                } else {
-                    //extra increase of quality of brie
-                    if (item.quality < 50) {
-                        item.quality++;
-                    }
+                if (item.sellIn < 6 && item.quality < MAX_QUALITY) {
+                    item.quality++;
                 }
             }
         }
     }
+
+    private boolean isConjuredItem(Item item) {
+        return item.name != null && item.name.startsWith(CONJURED);
+    }
+
+    private void updateQualityConjuredItem(Item item) {
+        updateQualityOrdinaryItem(item);
+        updateQualityOrdinaryItem(item);
+    }
+
+    private void updateQualityOrdinaryItem(Item item) {
+        if (item.quality > MIN_QUALITY) {
+            item.quality--;
+        }
+        if (item.sellIn < 0 && item.quality > MIN_QUALITY) {
+            item.quality--;
+        }
+    }
+
 }

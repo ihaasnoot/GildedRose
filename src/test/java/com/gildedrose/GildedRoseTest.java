@@ -89,7 +89,7 @@ class GildedRoseTest {
     @Test
     void testUpdateQuality_Backstage() {
         Item[] items = new Item[]{
-                new Item("Backstage passes to a TAFKAL80ETC concert", 11, 10),
+                new Item("Backstage passes to a TAFKAL80ETC concert", 12, 10),
                 new Item("Backstage passes to a TAFKAL80ETC concert", 7, 10),
                 new Item("Backstage passes to a TAFKAL80ETC concert", 3, 10),
                 new Item("Backstage passes to a TAFKAL80ETC concert", -1, 10)
@@ -99,7 +99,7 @@ class GildedRoseTest {
         app.updateQuality();
 
         assertEquals("Backstage passes to a TAFKAL80ETC concert", app.items[0].name);
-        assertEquals(10, app.items[0].sellIn);
+        assertEquals(11, app.items[0].sellIn);
         assertEquals(11, app.items[0].quality);
 
         assertEquals("Backstage passes to a TAFKAL80ETC concert", app.items[1].name);
